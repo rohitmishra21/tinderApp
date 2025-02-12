@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 const User = require("./models/user");
+const bcrypt = require("bcrypt");
+
 app.use(express.json());
 
 //sign-Up API
@@ -8,14 +10,17 @@ app.post("/signUp", async (req, res) => {
   try {
     const { firstName, lastName, email, gender, password, skills, age } =
       req.body;
+
+    const hashPassword = await bcrypt.hash(password, 10);
+
     const user = new User({
       firstName: firstName,
       lastName: lastName,
       email: email,
-      password: password,
+      password: hashPassword,
       gender: gender,
-      skills: "",
-      age: "",
+      skills: skills,
+      age: age,
     });
 
     await user.save();
@@ -87,7 +92,7 @@ app.patch("/user/:id", async (req, res) => {
     await User.findByIdAndUpdate(id, data);
     res.send("user Updated");
   } catch (error) {
-    res.status(404).send("there is some essue" + error.message);
+    res.status(404).send("ERROR : " + error.message);
   }
 });
 

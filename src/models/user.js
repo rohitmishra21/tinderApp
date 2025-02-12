@@ -10,11 +10,13 @@ const userSchema = new mongoose.Schema(
       maxLength: 20,
       trim: true,
     },
+
     lastName: {
       type: String,
       required: true,
       maxLength: 20,
     },
+    
     email: {
       type: String,
       required: true,
@@ -43,6 +45,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      validate(value){
+        if (!validator.isStrongPassword(value)) {
+          throw new Error("write astring password.");
+          
+        }
+      }
     },
     profileImg: {
       type: String,
