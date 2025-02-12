@@ -6,20 +6,23 @@ app.use(express.json());
 //sign-Up API
 app.post("/signUp", async (req, res) => {
   try {
-    const { firstName, lastName, email, gender, password } = req.body;
+    const { firstName, lastName, email, gender, password, skills, age } =
+      req.body;
     const user = new User({
       firstName: firstName,
       lastName: lastName,
       email: email,
       password: password,
       gender: gender,
+      skills: "",
+      age: "",
     });
 
     await user.save();
     res.send("User created");
   } catch (error) {
     console.log(error);
-    res.status(500).send("An error occurred");
+    res.status(500).send("there is some essu" + error.message);
   }
 });
 
@@ -67,14 +70,24 @@ app.delete("/deleteUser", async (req, res) => {
 
 //UpdateUser by id
 
-app.patch("/user", async (req, res) => {
-  const id = req.body.id;
+app.patch("/user/:id", async (req, res) => {
+  const id = req.params.id;
   const data = req.body;
   try {
+    const validDataToUpdate = ["skills", "profileImg", "bio"];
+    const isValid = Object.keys(data).every((k) =>
+      validDataToUpdate.includes(k)
+    );
+    if (!isValid) {
+      throw new Error(" this field are not allow to update");
+    }
+    if (data.skills.length > 10) {
+      throw new Error(" skills must be less than 10");
+    }
     await User.findByIdAndUpdate(id, data);
     res.send("user Updated");
   } catch (error) {
-     res.status(404).send("user is not updated...");
+    res.status(404).send("there is some essue" + error.message);
   }
 });
 
