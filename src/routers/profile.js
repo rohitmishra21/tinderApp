@@ -9,7 +9,7 @@ profileRoute.get("/profile/view", userAuth, async (req, res) => {
     const user = req.user;
     res.send(user);
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(401).send("please logIN");
   }
 });
 

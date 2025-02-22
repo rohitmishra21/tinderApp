@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       maxLength: 20,
     },
-    
+
     email: {
       type: String,
       required: true,
@@ -45,17 +45,16 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      validate(value){
+      validate(value) {
         if (!validator.isStrongPassword(value)) {
           throw new Error("write astring password.");
-          
         }
-      }
+      },
     },
     profileImg: {
       type: String,
       default:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHMBY8KV3NAYcO1Qe3IVWkI9grt9QKeZ3vHA&s",
+        "https://images.unsplash.com/photo-1739793669641-e5f4eddf6eab?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwzNnx8fGVufDB8fHx8fA%3D%3D",
       validate(value) {
         if (!validator.isURL(value)) {
           throw new Error("url is not valid");

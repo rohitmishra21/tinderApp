@@ -4,9 +4,9 @@ const updateProfileValidation = (req) => {
     "lastName",
     "gender",
     "age",
-    "skiils",
+    "skills",
     "bio",
-    "profilImg",
+    "profileImg",
   ];
 
   const validData = Object.keys(req.body).every((key) =>
