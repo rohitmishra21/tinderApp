@@ -44,7 +44,7 @@ authRouter.post("/signIn", async (req, res) => {
       const token = await jwt.sign({ _id: user._id }, "devTinder101");
 
       res.cookie("token", token);
-      res.send("user signIn successfully...");
+      res.send(user);
     } else {
       throw new Error("invalid credential");
     }
