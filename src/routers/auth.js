@@ -6,8 +6,22 @@ const authRouter = express.Router();
 
 authRouter.post("/signUp", async (req, res) => {
   try {
-    const { firstName, lastName, email, gender, password, skills, age } =
-      req.body;
+    const {
+      firstName,
+      lastName,
+      email,
+      gender,
+      password,
+      profileImg,
+      skills,
+      age,
+      bio,
+    } = req.body;
+
+    const existingUser = await User.findOne({ email: email });
+    if (existingUser) {
+      res.status(400).send("Email already in use.");
+    }
 
     const hashPassword = await bcrypt.hash(password, 10);
 
@@ -16,16 +30,15 @@ authRouter.post("/signUp", async (req, res) => {
       lastName: lastName,
       email: email,
       password: hashPassword,
-      gender: gender,
-      skills: skills,
-      age: age,
     });
 
-    await user.save();
-    res.send("User created");
+    const newUser = await user.save();
+    const token = await jwt.sign({ _id: newUser._id }, "devTinder101");
+    res.cookie("token", token);
+    res.send(newUser);
   } catch (error) {
     console.log(error);
-    res.status(500).send("there is some essu " + error.message);
+    res.status(500).send(error.message);
   }
 });
 
@@ -42,7 +55,6 @@ authRouter.post("/signIn", async (req, res) => {
 
     if (isValidPassword) {
       const token = await jwt.sign({ _id: user._id }, "devTinder101");
-
       res.cookie("token", token);
       res.send(user);
     } else {
