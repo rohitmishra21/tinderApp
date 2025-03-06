@@ -22,15 +22,18 @@ const intializeSocket = (server) => {
           let chat = await chatModel.findOne({
             participate: { $all: [userId, targetUserId] },
           });
+
           if (!chat) {
-            chat = new chat({
+            chat = new chatModel({
               participate: [userId, targetUserId],
               message: [],
             });
           }
 
           chat.message.push({ senderId: userId, text });
-          
+
+          await chat.save();
+          console.log(chat);
         } catch (error) {
           console.log(error.message);
         }
