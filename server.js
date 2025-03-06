@@ -1,10 +1,15 @@
 const app = require("./src/app");
 const connect = require("./src/db/db");
+const http = require('http');
+const intializeSocket = require("./src/socket/socket");
+const server = http.createServer(app)
+
+intializeSocket(server)
 
 connect()
   .then(() => {
     console.log("db connected");
-    app.listen(3000, () => {
+    server.listen(3000, () => {
       console.log("server is running on port 3000");
     });
   })

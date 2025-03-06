@@ -37,7 +37,6 @@ authRouter.post("/signUp", async (req, res) => {
     res.cookie("token", token);
     res.send(newUser);
   } catch (error) {
-    console.log(error);
     res.status(500).send(error.message);
   }
 });
