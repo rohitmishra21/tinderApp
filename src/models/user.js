@@ -40,6 +40,13 @@ const userSchema = new mongoose.Schema(
       type: Number,
       min: 18,
     },
+    onlineStatus: {
+      type: Boolean,
+      default: false,
+    },
+    lastSeen: {
+      type: Date,
+    },
     password: {
       type: String,
       required: true,
