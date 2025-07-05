@@ -3,7 +3,7 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const authRouter = express.Router();
-
+require("dotenv").config();
 
 authRouter.post("/signUp", async (req, res) => {
   try {
@@ -15,7 +15,7 @@ authRouter.post("/signUp", async (req, res) => {
 
     const existingUser = await User.findOne({ email });
     const existingFirstName = await User.findOne({ firstName });
-    
+
     if (existingFirstName) {
       return res.status(400).json({ errors: ["First name already exists."] });
     }
@@ -37,7 +37,7 @@ authRouter.post("/signUp", async (req, res) => {
 
     const newUser = await user.save();
 
-    const token = jwt.sign({ _id: newUser._id }, "devTinder101");
+    const token = jwt.sign({ _id: newUser._id }, process.env.JWT_SECRET);
     res.cookie("token", token, { httpOnly: true });
     res.status(201).json(newUser);
   } catch (error) {
@@ -70,7 +70,7 @@ authRouter.post("/signIn", async (req, res) => {
       return res.status(401).json({ errors: ["Invalid credentials."] });
     }
 
-    const token = jwt.sign({ _id: user._id }, "devTinder101");
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
     res.cookie("token", token, { httpOnly: true });
     res.status(200).json(user);
   } catch (error) {

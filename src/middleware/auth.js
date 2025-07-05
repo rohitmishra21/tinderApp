@@ -1,11 +1,12 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+require("dotenv").config();
 
 const userAuth = async (req, res, next) => {
   try {
     const { token } = req.cookies;
 
-    const decodedMsg = await jwt.verify(token, "devTinder101");
+    const decodedMsg = await jwt.verify(token, process.env.JWT_SECRET);
 
     if (!decodedMsg) {
       throw new Error("invalid token");
