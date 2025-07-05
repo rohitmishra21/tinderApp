@@ -10,7 +10,7 @@ const chat = require("./routers/chat");
 const cors = require("cors");
 
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
 const allowedOrigins = [
   "http://localhost:5173",
   "https://tinder-app-ui-wl3c.vercel.app"
