@@ -15,6 +15,8 @@ profileRoute.get("/profile/view", userAuth, async (req, res) => {
 
 profileRoute.patch("/profile/edit", userAuth, async (req, res) => {
   try {
+    console.log("🔥 PATCH /profile/edit hit"); // 👈 ye aana chahiye terminal me
+    console.log("📦 req.body", req.body); // 👈 yahan payload show hoga
     if (!updateProfileValidation(req)) {
       throw new Error("this field will not be changed");
     }
@@ -22,12 +24,10 @@ profileRoute.patch("/profile/edit", userAuth, async (req, res) => {
     const loggedInUser = req.user;
     const { age } = req.body;
 
-    // ✅ Age validation
     if (age && age < 18) {
       return res.status(400).json({ errors: ["Age must be at least 18."] });
     }
 
-    // ✅ Update only allowed fields
     Object.keys(req.body).forEach((e) => {
       if (e in loggedInUser) {
         loggedInUser[e] = req.body[e];
