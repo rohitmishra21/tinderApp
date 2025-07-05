@@ -21,10 +21,8 @@ authRouter.post("/signUp", async (req, res) => {
     }
 
     if (existingUser) {
-      return res.status(400).json({ errors: ["Username already exists."] });
+      return res.status(400).json({ errors: ["Email already exists."] });
     }
-
-
 
     const hashPassword = await bcrypt.hash(password, 10);
 
@@ -38,7 +36,15 @@ authRouter.post("/signUp", async (req, res) => {
     const newUser = await user.save();
 
     const token = jwt.sign({ _id: newUser._id }, process.env.JWT_SECRET);
-    res.cookie("token", token, { httpOnly: true });
+
+   
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      maxAge: 1000 * 60 * 60 * 24 * 7, 
+    });
+
     res.status(201).json(newUser);
   } catch (error) {
     if (error.name === "ValidationError") {
@@ -50,7 +56,6 @@ authRouter.post("/signUp", async (req, res) => {
     res.status(500).json({ errors: ["Internal Server Error"] });
   }
 });
-
 
 authRouter.post("/signIn", async (req, res) => {
   try {
@@ -71,7 +76,15 @@ authRouter.post("/signIn", async (req, res) => {
     }
 
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
-    res.cookie("token", token, { httpOnly: true });
+
+    
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+
     res.status(200).json(user);
   } catch (error) {
     console.error("Signin Error:", error);
@@ -79,9 +92,14 @@ authRouter.post("/signIn", async (req, res) => {
   }
 });
 
-
 authRouter.post("/signOut", (req, res) => {
-  res.cookie("token", null, { expires: new Date(Date.now()), httpOnly: true });
+  res.cookie("token", null, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    expires: new Date(0),
+  });
+
   res.status(200).json({ message: "User signed out successfully." });
 });
 
