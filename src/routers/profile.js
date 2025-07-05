@@ -16,22 +16,47 @@ profileRoute.get("/profile/view", userAuth, async (req, res) => {
 profileRoute.patch("/profile/edit", userAuth, async (req, res) => {
   try {
     if (!updateProfileValidation(req)) {
-      throw new Error("this filed will not be chnge");
+      throw new Error("this field will not be changed");
     }
 
     const loggedInUser = req.user;
+    const { age } = req.body;
 
-    Object.keys(req.body).forEach((e) => (loggedInUser[e] = req.body[e]));
+    // ✅ Age validation
+    if (age && age < 18) {
+      return res.status(400).json({ errors: ["Age must be at least 18."] });
+    }
+
+    // ✅ Update only allowed fields
+    Object.keys(req.body).forEach((e) => {
+      if (e in loggedInUser) {
+        loggedInUser[e] = req.body[e];
+      }
+    });
 
     await loggedInUser.save();
+
     res.json({
-      message: `${loggedInUser.firstName},your profile is updated`,
+      message: `${loggedInUser.firstName}, your profile is updated`,
       data: loggedInUser,
     });
   } catch (error) {
-    res.status(400).send(error.message);
+    console.log("Profile update error:", error);
+
+    if (error.name === "ValidationError") {
+      const errors = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({ errors });
+    }
+
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+      return res.status(400).json({ errors: [`${field} already exists.`] });
+    }
+
+    return res.status(500).json({ errors: ["Internal Server Error"] });
   }
 });
+
 
 profileRoute.patch("/profile/password", userAuth, async (req, res) => {
   try {
