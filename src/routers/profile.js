@@ -15,8 +15,6 @@ profileRoute.get("/profile/view", userAuth, async (req, res) => {
 
 profileRoute.patch("/profile/edit", userAuth, async (req, res) => {
   try {
-    console.log("🔥 PATCH /profile/edit hit"); // 👈 ye aana chahiye terminal me
-    console.log("📦 req.body", req.body); // 👈 yahan payload show hoga
     if (!updateProfileValidation(req)) {
       throw new Error("this field will not be changed");
     }
