@@ -3,11 +3,12 @@ const cors = require("cors");
 const chatModel = require("../models/chat");
 const User = require("../models/user");
 const intializeSocket = (server) => {
-  const io = socket(server, {
+  const io = require("socket.io")(server, {
     cors: {
-      origin: " http://localhost:5173",
-      credentials: true,
-    },
+      origin: ["http://localhost:5173", "https://tinder-app-ui-wl3c.vercel.app"],=
+      methods: ["GET", "POST"],
+      credentials: true
+    }
   });
 
   io.on("connection", (socket) => {
